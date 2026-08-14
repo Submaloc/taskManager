@@ -14,7 +14,7 @@ export const taskSchema = z.object({
 })
 
 export const taskFormSchema = z.object({
-  title: z.string().trim().min(1, 'Введите название'),
+  title: z.string().trim().min(1, 'Enter a title'),
   description: z.string().trim(),
   status: taskStatusSchema,
   priority: taskPrioritySchema,

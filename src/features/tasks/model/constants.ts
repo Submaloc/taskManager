@@ -1,18 +1,18 @@
 import type { TaskPriority, TaskStatus, TaskStatusFilter } from './types'
 
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
-  todo: 'К выполнению',
-  in_progress: 'В работе',
-  done: 'Выполнено',
+  todo: 'To do',
+  in_progress: 'In progress',
+  done: 'Done',
 }
 
 export const TASK_PRIORITY_LABELS: Record<TaskPriority, string> = {
-  low: 'Низкий',
-  medium: 'Средний',
-  high: 'Высокий',
+  low: 'Low',
+  medium: 'Medium',
+  high: 'High',
 }
 
 export const TASK_STATUS_FILTER_LABELS: Record<TaskStatusFilter, string> = {
-  all: 'Все',
+  all: 'All',
   ...TASK_STATUS_LABELS,
 }
