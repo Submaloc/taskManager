@@ -16,3 +16,15 @@ export const TASK_STATUS_FILTER_LABELS: Record<TaskStatusFilter, string> = {
   all: 'All',
   ...TASK_STATUS_LABELS,
 }
+
+export const TASK_STATUS_COLORS: Record<TaskStatus, string> = {
+  todo: 'blue',
+  in_progress: 'orange',
+  done: 'green',
+}
+
+export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
+  low: 'gray',
+  medium: 'yellow',
+  high: 'red',
+}
