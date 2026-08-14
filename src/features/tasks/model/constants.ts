@@ -1,4 +1,9 @@
-import type { TaskPriority, TaskStatus, TaskStatusFilter } from './types'
+import type {
+  TaskFormValues,
+  TaskPriority,
+  TaskStatus,
+  TaskStatusFilter,
+} from './types'
 
 export const TASK_STATUS_LABELS: Record<TaskStatus, string> = {
   todo: 'To do',
@@ -28,3 +33,18 @@ export const TASK_PRIORITY_COLORS: Record<TaskPriority, string> = {
   medium: 'yellow',
   high: 'red',
 }
+
+export const TASK_FORM_DEFAULTS: TaskFormValues = {
+  title: '',
+  description: '',
+  status: 'todo',
+  priority: 'medium',
+}
+
+export const TASK_STATUS_OPTIONS = (
+  Object.entries(TASK_STATUS_LABELS) as [TaskStatus, string][]
+).map(([value, label]) => ({ value, label }))
+
+export const TASK_PRIORITY_OPTIONS = (
+  Object.entries(TASK_PRIORITY_LABELS) as [TaskPriority, string][]
+).map(([value, label]) => ({ value, label }))

@@ -1,41 +1,73 @@
-import { Badge, Card, Group, Text } from '@mantine/core'
-import { Link } from 'react-router-dom'
+import { Badge, Button, Card, Group, Text } from '@mantine/core'
+import { useNavigate } from 'react-router-dom'
 
 import { formatDate } from '../../../shared/lib/formatDate'
-import {
-  TASK_PRIORITY_COLORS,
-  TASK_PRIORITY_LABELS,
-  TASK_STATUS_COLORS,
-  TASK_STATUS_LABELS,
-} from '../model/constants'
-import type { Task } from '../model/types'
+import { TASK_PRIORITY_COLORS, TASK_PRIORITY_LABELS } from '../model/constants'
+import type { Task, TaskStatus } from '../model/types'
+import { TaskStatusSelect } from './TaskStatusSelect'
 
 type TaskCardProps = {
   task: Task
+  isUpdatingStatus?: boolean
+  onEdit: (task: Task) => void
+  onDelete: (task: Task) => void
+  onStatusChange: (task: Task, status: TaskStatus) => void
 }
 
-export function TaskCard({ task }: TaskCardProps) {
+export function TaskCard({
+  task,
+  isUpdatingStatus,
+  onEdit,
+  onDelete,
+  onStatusChange,
+}: TaskCardProps) {
+  const navigate = useNavigate()
+
   return (
     <Card
-      component={Link}
-      to={`/tasks/${task.id}`}
       withBorder
       padding="md"
       radius="md"
-      style={{ textDecoration: 'none' }}
+      style={{ cursor: 'pointer' }}
+      onClick={() => navigate(`/tasks/${task.id}`)}
     >
       <Group justify="space-between" mb="xs" wrap="nowrap" gap="sm">
         <Text fw={600} lineClamp={1}>
           {task.title}
         </Text>
-        <Badge color={TASK_PRIORITY_COLORS[task.priority]}>
-          {TASK_PRIORITY_LABELS[task.priority]}
-        </Badge>
+        <Group gap="xs" wrap="nowrap">
+          <Badge color={TASK_PRIORITY_COLORS[task.priority]}>
+            {TASK_PRIORITY_LABELS[task.priority]}
+          </Badge>
+          <Button
+            size="compact-xs"
+            variant="light"
+            onClick={(event) => {
+              event.stopPropagation()
+              onEdit(task)
+            }}
+          >
+            Edit
+          </Button>
+          <Button
+            size="compact-xs"
+            variant="light"
+            color="red"
+            onClick={(event) => {
+              event.stopPropagation()
+              onDelete(task)
+            }}
+          >
+            Delete
+          </Button>
+        </Group>
       </Group>
       <Group gap="xs">
-        <Badge variant="light" color={TASK_STATUS_COLORS[task.status]}>
-          {TASK_STATUS_LABELS[task.status]}
-        </Badge>
+        <TaskStatusSelect
+          value={task.status}
+          disabled={isUpdatingStatus}
+          onChange={(status) => onStatusChange(task, status)}
+        />
         <Text size="sm" c="dimmed">
           {formatDate(task.createdAt)}
         </Text>
