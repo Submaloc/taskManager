@@ -1,4 +1,4 @@
-import { useQuery } from '@tanstack/react-query'
+import { keepPreviousData, useQuery } from '@tanstack/react-query'
 
 import { getTasks } from '../api/tasksApi'
 import type { GetTasksParams } from '../model/types'
@@ -8,5 +8,6 @@ export function useTasks(params?: GetTasksParams) {
   return useQuery({
     queryKey: taskKeys.list(params),
     queryFn: () => getTasks(params),
+    placeholderData: keepPreviousData,
   })
 }
