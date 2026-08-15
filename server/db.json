@@ -39,14 +39,6 @@
       "status": "done",
       "priority": "high",
       "createdAt": "2026-08-13T16:20:00.000Z"
-    },
-    {
-      "title": "Wash car next evening",
-      "description": "",
-      "status": "done",
-      "priority": "high",
-      "createdAt": "2026-08-14T12:53:29.575Z",
-      "id": "4c-sSe03pTA"
     }
   ],
   "$schema": "./node_modules/json-server/schema.json"
