@@ -1,75 +1,107 @@
-# React + TypeScript + Vite
+# Task Manager
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Веб-приложение для управления задачами: список, поиск, фильтр по статусу, создание, редактирование, удаление, смена статуса и страница с подробностями.
 
-Currently, two official plugins are available:
+Данные хранятся в mock API (`json-server`).
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Как запустить
 
-## React Compiler
+Нужны **Node.js** (LTS) и npm.
 
-The React Compiler is enabled on this template. See [this documentation](https://react.dev/learn/react-compiler) for more information.
+1. Установить зависимости:
 
-Note: This will impact Vite dev & build performances.
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+2. Запустить mock API (терминал 1):
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run server
 ```
+
+Сервер поднимется на [http://localhost:3001](http://localhost:3001). Список задач: [http://localhost:3001/tasks](http://localhost:3001/tasks).
+
+3. Запустить приложение (терминал 2):
+
+```bash
+npm run dev
+```
+
+Открыть [http://localhost:5173](http://localhost:5173).
+
+Нужны **оба** процесса. Если API выключен, на экране будет ошибка загрузки и кнопка Try again.
+
+Остановить процесс: `Ctrl + C` в соответствующем терминале.
+
+Полезные скрипты:
+
+```bash
+npm run lint          # ESLint
+npm run format        # Prettier
+npm run build         # production-сборка
+```
+
+Стартовые задачи лежат в `server/db.json`. json-server меняет этот файл при создании, редактировании и удалении.
+
+## Технологии
+
+| Инструмент            | Зачем                                    |
+| --------------------- | ---------------------------------------- |
+| React + TypeScript    | UI и типизация                           |
+| Vite                  | сборка и dev-сервер                      |
+| React Router          | маршруты списка и деталей                |
+| TanStack Query        | запросы, кэш, loading / error            |
+| React Hook Form + Zod | формы и валидация                        |
+| Mantine               | UI-компоненты (кнопки, модалки, селекты) |
+| json-server           | REST API без своего бэкенда              |
+| ESLint + Prettier     | линт и единый стиль кода                 |
+
+## Архитектура
+
+
+```
+src/
+  main.tsx                 запуск React-приложения
+  app/
+    App.tsx                обёртки Mantine и React Query
+    providers/             настройки QueryClient
+    router/                маршруты страниц
+    layout/                шапка и общая оболочка
+  pages/
+    TaskListPage.tsx       список задач
+    TaskDetailsPage.tsx    подробности одной задачи
+    NotFoundPage.tsx       неизвестный адрес
+  features/tasks/
+    api/                   запросы к /tasks
+    queries/               хуки React Query (список, одна задача, create/update/delete)
+    model/                 схема Zod, типы, статусы и приоритеты
+    components/            карточка, поиск, фильтр, форма, модалки, детали
+  shared/
+    api/                   общий fetch и тексты ошибок
+    ui/                    загрузка, пустой список, ошибка
+    hooks/                 debounce для поиска
+    lib/                   формат даты
+server/
+  db.json                  данные для json-server
+```
+
+Страница не вызывает `fetch` напрямую. Она использует хуки (`useTasks`, `useCreateTask` и т.д.), хуки ходят в `tasksApi`, тот — в `httpClient`.
+
+Маршруты:
+
+- `/` — список задач
+- `/tasks/:id` — подробности задачи
+- любой другой адрес — 404
+
+## Технические решения
+
+**Подробности задачи — отдельная страница.** 
+
+**Поиск не стучится на сервер на каждую букву.** Задержка около 300 мс после ввода (debounce), потом один запрос. Фильтр по статусу меняется сразу — там не набор текста, а один клик.
+
+**На экране всегда понятно, что происходит.** Есть отдельные состояния: загрузка, пустой список, ошибка, задача не найдена. После создания, правки или удаления список обновляется через React Query, без ручного `useEffect`.
+
+**Mantine для UI.** Модалки, селекты и кнопки. 
+
+
