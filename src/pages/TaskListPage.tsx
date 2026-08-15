@@ -1,12 +1,13 @@
 import { Button, Group, Title } from '@mantine/core'
 import { useState } from 'react'
 
+import { DeleteTaskDialog } from '../features/tasks/components/DeleteTaskDialog'
 import { TaskFilters } from '../features/tasks/components/TaskFilters'
 import { TaskFormModal } from '../features/tasks/components/TaskFormModal'
-import { DeleteTaskDialog } from '../features/tasks/components/DeleteTaskDialog'
 import { TaskList } from '../features/tasks/components/TaskList'
 import { TaskSearch } from '../features/tasks/components/TaskSearch'
 import { TASK_FORM_DEFAULTS } from '../features/tasks/model/constants'
+import { getTaskFormValues } from '../features/tasks/model/formValues'
 import type {
   Task,
   TaskFormValues,
@@ -23,15 +24,6 @@ import { ErrorState } from '../shared/ui/ErrorState'
 import { LoadingState } from '../shared/ui/LoadingState'
 
 type TaskFormState = { mode: 'create' } | { mode: 'edit'; task: Task }
-
-function getFormValues(task: Task): TaskFormValues {
-  return {
-    title: task.title,
-    description: task.description,
-    status: task.status,
-    priority: task.priority,
-  }
-}
 
 export function TaskListPage() {
   const [title, setTitle] = useState('')
@@ -163,7 +155,7 @@ export function TaskListPage() {
         title={formState?.mode === 'edit' ? 'Edit task' : 'New task'}
         defaultValues={
           formState?.mode === 'edit'
-            ? getFormValues(formState.task)
+            ? getTaskFormValues(formState.task)
             : TASK_FORM_DEFAULTS
         }
         submitLabel={
