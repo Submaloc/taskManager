@@ -46,7 +46,7 @@ export function TaskDetails({
           Created {formatDate(task.createdAt)}
         </Text>
       </Group>
-      <Text>
+      <Text c={task.description.trim() ? undefined : 'dimmed'}>
         {task.description.trim() ? task.description : 'No description'}
       </Text>
     </Stack>

@@ -28,7 +28,7 @@
       "id": "4",
       "title": "Book a meeting room for Friday",
       "description": "Find a free slot at 11:00 and send invites to the participants.",
-      "status": "done",
+      "status": "in_progress",
       "priority": "medium",
       "createdAt": "2026-08-12T08:45:00.000Z"
     },

@@ -1,5 +1,5 @@
 import { Badge, Button, Card, Group, Text } from '@mantine/core'
-import { useNavigate } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { formatDate } from '../../../shared/lib/formatDate'
 import { TASK_PRIORITY_COLORS, TASK_PRIORITY_LABELS } from '../model/constants'
@@ -28,11 +28,18 @@ export function TaskCard({
       withBorder
       padding="md"
       radius="md"
-      style={{ cursor: 'pointer' }}
+      className="task-card"
       onClick={() => navigate(`/tasks/${task.id}`)}
     >
       <Group justify="space-between" mb="xs" wrap="nowrap" gap="sm">
-        <Text fw={600} lineClamp={1}>
+        <Text
+          fw={600}
+          lineClamp={1}
+          component={Link}
+          to={`/tasks/${task.id}`}
+          c="inherit"
+          td="none"
+        >
           {task.title}
         </Text>
         <Group gap="xs" wrap="nowrap">

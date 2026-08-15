@@ -1,6 +1,6 @@
 import { Select } from '@mantine/core'
 
-import { TASK_STATUS_OPTIONS } from '../model/constants'
+import { isTaskStatus, TASK_STATUS_OPTIONS } from '../model/constants'
 import type { TaskStatus } from '../model/types'
 
 type TaskStatusSelectProps = {
@@ -28,8 +28,8 @@ export function TaskStatusSelect({
         value={value}
         disabled={disabled}
         onChange={(nextValue) => {
-          if (nextValue && nextValue !== value) {
-            onChange(nextValue as TaskStatus)
+          if (nextValue && nextValue !== value && isTaskStatus(nextValue)) {
+            onChange(nextValue)
           }
         }}
       />

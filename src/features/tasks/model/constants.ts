@@ -41,6 +41,21 @@ export const TASK_FORM_DEFAULTS: TaskFormValues = {
   priority: 'medium',
 }
 
+export const TASK_STATUS_FILTERS: TaskStatusFilter[] = [
+  'all',
+  'todo',
+  'in_progress',
+  'done',
+]
+
+export function isTaskStatus(value: string): value is TaskStatus {
+  return value in TASK_STATUS_LABELS
+}
+
+export function isTaskStatusFilter(value: string): value is TaskStatusFilter {
+  return value in TASK_STATUS_FILTER_LABELS
+}
+
 export const TASK_STATUS_OPTIONS = (
   Object.entries(TASK_STATUS_LABELS) as [TaskStatus, string][]
 ).map(([value, label]) => ({ value, label }))

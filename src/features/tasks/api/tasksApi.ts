@@ -1,10 +1,28 @@
-import { z } from 'zod'
-
-import { httpClient } from '../../../shared/api/httpClient'
+import { HttpError, httpClient } from '../../../shared/api/httpClient'
 import { taskSchema } from '../model/schema'
 import type { GetTasksParams, Task, TaskFormValues } from '../model/types'
 
-const tasksSchema = z.array(taskSchema)
+const tasksSchema = taskSchema.array()
+
+function parseTask(data: unknown): Task {
+  const result = taskSchema.safeParse(data)
+
+  if (!result.success) {
+    throw new HttpError('Received invalid data from the server.', 500)
+  }
+
+  return result.data
+}
+
+function parseTasks(data: unknown): Task[] {
+  const result = tasksSchema.safeParse(data)
+
+  if (!result.success) {
+    throw new HttpError('Received invalid data from the server.', 500)
+  }
+
+  return result.data
+}
 
 function buildTasksQuery(params?: GetTasksParams): string {
   const parts: string[] = []
@@ -25,12 +43,12 @@ function buildTasksQuery(params?: GetTasksParams): string {
 
 export async function getTasks(params?: GetTasksParams): Promise<Task[]> {
   const data = await httpClient<unknown>(`/tasks${buildTasksQuery(params)}`)
-  return tasksSchema.parse(data)
+  return parseTasks(data)
 }
 
 export async function getTaskById(id: string): Promise<Task> {
   const data = await httpClient<unknown>(`/tasks/${id}`)
-  return taskSchema.parse(data)
+  return parseTask(data)
 }
 
 export async function createTask(values: TaskFormValues): Promise<Task> {
@@ -42,7 +60,7 @@ export async function createTask(values: TaskFormValues): Promise<Task> {
     }),
   })
 
-  return taskSchema.parse(data)
+  return parseTask(data)
 }
 
 export async function updateTask(
@@ -54,7 +72,7 @@ export async function updateTask(
     body: JSON.stringify(values),
   })
 
-  return taskSchema.parse(data)
+  return parseTask(data)
 }
 
 export async function deleteTask(id: string): Promise<void> {

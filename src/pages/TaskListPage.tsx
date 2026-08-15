@@ -1,4 +1,4 @@
-import { Button, Group, Title } from '@mantine/core'
+import { Button, Group, Loader, Title } from '@mantine/core'
 import { useState } from 'react'
 
 import { DeleteTaskDialog } from '../features/tasks/components/DeleteTaskDialog'
@@ -18,10 +18,12 @@ import { useCreateTask } from '../features/tasks/queries/useCreateTask'
 import { useDeleteTask } from '../features/tasks/queries/useDeleteTask'
 import { useTasks } from '../features/tasks/queries/useTasks'
 import { useUpdateTask } from '../features/tasks/queries/useUpdateTask'
+import { getErrorMessage } from '../shared/api/httpClient'
 import { useDebounce } from '../shared/hooks/useDebounce'
 import { EmptyState } from '../shared/ui/EmptyState'
 import { ErrorState } from '../shared/ui/ErrorState'
 import { LoadingState } from '../shared/ui/LoadingState'
+import { MutationErrorAlert } from '../shared/ui/MutationErrorAlert'
 
 type TaskFormState = { mode: 'create' } | { mode: 'edit'; task: Task }
 
@@ -34,8 +36,10 @@ export function TaskListPage() {
 
   const {
     data: tasks,
+    error,
     isPending,
     isError,
+    isFetching,
     refetch,
   } = useTasks({
     title: debouncedTitle,
@@ -49,8 +53,7 @@ export function TaskListPage() {
 
   const hasActiveFilters = status !== 'all' || debouncedTitle.trim().length > 0
   const isSubmitting = createTask.isPending || updateTask.isPending
-  const submitError =
-    createTask.error?.message ?? updateTask.error?.message ?? undefined
+  const submitError = getErrorMessage(createTask.error ?? updateTask.error, '')
 
   function closeForm() {
     setFormState(null)
@@ -107,19 +110,30 @@ export function TaskListPage() {
   return (
     <>
       <Group justify="space-between" mb="md">
-        <Title order={2}>Tasks</Title>
+        <Group gap="sm">
+          <Title order={2}>Tasks</Title>
+          {isFetching && !isPending ? <Loader size="sm" /> : null}
+        </Group>
         <Button onClick={openCreateForm}>New task</Button>
       </Group>
       <Group justify="space-between" align="flex-end" mb="md" wrap="wrap">
         <TaskSearch value={title} onChange={setTitle} />
         <TaskFilters value={status} onChange={setStatus} />
       </Group>
+      <MutationErrorAlert
+        error={updateStatus.error}
+        title="Failed to update status"
+        onClose={() => updateStatus.reset()}
+      />
       {isPending ? (
         <LoadingState />
       ) : isError ? (
         <ErrorState
           title="Failed to load tasks"
-          message="Make sure the API server is running and try again."
+          message={getErrorMessage(
+            error,
+            'Make sure the API server is running and try again.',
+          )}
           onRetry={() => {
             void refetch()
           }}
@@ -162,7 +176,7 @@ export function TaskListPage() {
           formState?.mode === 'edit' ? 'Save changes' : 'Create task'
         }
         isSubmitting={isSubmitting}
-        submitError={submitError}
+        submitError={submitError || undefined}
         onClose={closeForm}
         onSubmit={handleSubmit}
       />
@@ -170,7 +184,9 @@ export function TaskListPage() {
         opened={taskToDelete !== null}
         taskTitle={taskToDelete?.title}
         isDeleting={deleteTask.isPending}
-        errorMessage={deleteTask.error?.message}
+        errorMessage={
+          deleteTask.error ? getErrorMessage(deleteTask.error) : undefined
+        }
         onClose={closeDeleteDialog}
         onConfirm={() => {
           void confirmDelete()

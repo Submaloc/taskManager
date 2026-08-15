@@ -7,3 +7,13 @@ body,
 body {
   margin: 0;
 }
+
+.task-card {
+  cursor: pointer;
+  transition: box-shadow 120ms ease;
+}
+
+.task-card:hover,
+.task-card:focus-visible {
+  box-shadow: var(--mantine-shadow-sm);
+}
