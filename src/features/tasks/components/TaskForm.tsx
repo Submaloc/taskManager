@@ -53,6 +53,7 @@ export function TaskForm({
         <TextInput
           label="Title"
           placeholder="Task title"
+          size="md"
           error={errors.title?.message}
           {...register('title')}
         />
@@ -61,6 +62,7 @@ export function TaskForm({
           placeholder="Task description"
           minRows={3}
           autosize
+          size="md"
           error={errors.description?.message}
           {...register('description')}
         />
@@ -73,6 +75,7 @@ export function TaskForm({
                 label="Status"
                 data={TASK_STATUS_OPTIONS}
                 allowDeselect={false}
+                size="md"
                 error={fieldState.error?.message}
                 value={field.value}
                 onChange={(value) => {
@@ -91,6 +94,7 @@ export function TaskForm({
                 label="Priority"
                 data={TASK_PRIORITY_OPTIONS}
                 allowDeselect={false}
+                size="md"
                 error={fieldState.error?.message}
                 value={field.value}
                 onChange={(value) => {
@@ -102,11 +106,16 @@ export function TaskForm({
             )}
           />
         </SimpleGrid>
-        <Group justify="flex-end">
-          <Button variant="default" onClick={onCancel} disabled={isSubmitting}>
+        <Group justify="flex-end" gap="sm" wrap="wrap">
+          <Button
+            variant="default"
+            onClick={onCancel}
+            disabled={isSubmitting}
+            flex="1 1 8rem"
+          >
             Cancel
           </Button>
-          <Button type="submit" loading={isSubmitting}>
+          <Button type="submit" loading={isSubmitting} flex="1 1 8rem">
             {submitLabel}
           </Button>
         </Group>

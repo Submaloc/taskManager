@@ -8,6 +8,10 @@ body {
   margin: 0;
 }
 
+#root {
+  overflow-x: clip;
+}
+
 .task-card {
   cursor: pointer;
   transition: box-shadow 120ms ease;
@@ -16,4 +20,10 @@ body {
 .task-card:hover,
 .task-card:focus-visible {
   box-shadow: var(--mantine-shadow-sm);
+}
+
+@media (hover: none) {
+  .task-card:hover {
+    box-shadow: none;
+  }
 }

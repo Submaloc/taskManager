@@ -1,4 +1,4 @@
-import { Button, Group, Loader, Title } from '@mantine/core'
+import { Button, Group, Loader, Stack, Title } from '@mantine/core'
 import { useState } from 'react'
 
 import { DeleteTaskDialog } from '../features/tasks/components/DeleteTaskDialog'
@@ -109,17 +109,21 @@ export function TaskListPage() {
 
   return (
     <>
-      <Group justify="space-between" mb="md">
-        <Group gap="sm">
-          <Title order={2}>Tasks</Title>
+      <Group justify="space-between" mb="md" wrap="wrap" gap="sm">
+        <Group gap="sm" wrap="nowrap" miw={0}>
+          <Title order={2} fz={{ base: 'h3', sm: 'h2' }}>
+            Tasks
+          </Title>
           {isFetching && !isPending ? <Loader size="sm" /> : null}
         </Group>
-        <Button onClick={openCreateForm}>New task</Button>
+        <Button onClick={openCreateForm} flex="0 0 auto">
+          New task
+        </Button>
       </Group>
-      <Group justify="space-between" align="flex-end" mb="md" wrap="wrap">
+      <Stack gap="sm" mb="md">
         <TaskSearch value={title} onChange={setTitle} />
         <TaskFilters value={status} onChange={setStatus} />
-      </Group>
+      </Stack>
       <MutationErrorAlert
         error={updateStatus.error}
         title="Failed to update status"

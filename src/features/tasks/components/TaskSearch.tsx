@@ -11,7 +11,8 @@ export function TaskSearch({ value, onChange }: TaskSearchProps) {
       placeholder="Search by title"
       value={value}
       onChange={(event) => onChange(event.currentTarget.value)}
-      style={{ flex: 1, minWidth: 220 }}
+      size="md"
+      w="100%"
     />
   )
 }

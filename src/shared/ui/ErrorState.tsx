@@ -12,8 +12,8 @@ export function ErrorState({
   onRetry,
 }: ErrorStateProps) {
   return (
-    <Center py="xl">
-      <Stack align="center" gap="sm">
+    <Center py="xl" px="sm">
+      <Stack align="center" gap="sm" maw={420}>
         <Title order={3}>{title}</Title>
         <Text c="dimmed" ta="center">
           {message}

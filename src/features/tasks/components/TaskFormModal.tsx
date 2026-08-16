@@ -1,4 +1,5 @@
 import { Modal } from '@mantine/core'
+import { useMediaQuery } from '@mantine/hooks'
 
 import type { TaskFormValues } from '../model/types'
 import { TaskForm } from './TaskForm'
@@ -26,8 +27,18 @@ export function TaskFormModal({
   onClose,
   onSubmit,
 }: TaskFormModalProps) {
+  const isMobile = useMediaQuery('(max-width: 48em)')
+
   return (
-    <Modal opened={opened} onClose={onClose} title={title} centered>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={title}
+      centered
+      size="md"
+      fullScreen={isMobile}
+      radius={isMobile ? 0 : 'md'}
+    >
       {opened ? (
         <TaskForm
           key={formKey}

@@ -1,4 +1,4 @@
-import { Badge, Button, Card, Group, Text } from '@mantine/core'
+import { Badge, Button, Card, Group, Stack, Text } from '@mantine/core'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { formatDate } from '../../../shared/lib/formatDate'
@@ -31,54 +31,65 @@ export function TaskCard({
       className="task-card"
       onClick={() => navigate(`/tasks/${task.id}`)}
     >
-      <Group justify="space-between" mb="xs" wrap="nowrap" gap="sm">
-        <Text
-          fw={600}
-          lineClamp={1}
-          component={Link}
-          to={`/tasks/${task.id}`}
-          c="inherit"
-          td="none"
-        >
-          {task.title}
-        </Text>
-        <Group gap="xs" wrap="nowrap">
-          <Badge color={TASK_PRIORITY_COLORS[task.priority]}>
+      <Stack gap="sm">
+        <Group justify="space-between" align="flex-start" wrap="nowrap" gap="sm">
+          <Text
+            fw={600}
+            lineClamp={2}
+            component={Link}
+            to={`/tasks/${task.id}`}
+            c="inherit"
+            td="none"
+            style={{ flex: 1, minWidth: 0, overflowWrap: 'anywhere' }}
+          >
+            {task.title}
+          </Text>
+          <Badge color={TASK_PRIORITY_COLORS[task.priority]} flex="0 0 auto">
             {TASK_PRIORITY_LABELS[task.priority]}
           </Badge>
-          <Button
-            size="compact-xs"
-            variant="light"
-            onClick={(event) => {
-              event.stopPropagation()
-              onEdit(task)
-            }}
-          >
-            Edit
-          </Button>
-          <Button
-            size="compact-xs"
-            variant="light"
-            color="red"
-            onClick={(event) => {
-              event.stopPropagation()
-              onDelete(task)
-            }}
-          >
-            Delete
-          </Button>
         </Group>
-      </Group>
-      <Group gap="xs">
-        <TaskStatusSelect
-          value={task.status}
-          disabled={isUpdatingStatus}
-          onChange={(status) => onStatusChange(task, status)}
-        />
-        <Text size="sm" c="dimmed">
-          {formatDate(task.createdAt)}
-        </Text>
-      </Group>
+        <Group justify="space-between" align="center" wrap="wrap" gap="sm">
+          <Group gap="xs" wrap="wrap" miw={0}>
+            <TaskStatusSelect
+              value={task.status}
+              disabled={isUpdatingStatus}
+              onChange={(status) => onStatusChange(task, status)}
+            />
+            <Text size="sm" c="dimmed">
+              {formatDate(task.createdAt)}
+            </Text>
+          </Group>
+          <Group
+            gap="xs"
+            wrap="nowrap"
+            w={{ base: '100%', xs: 'auto' }}
+            grow
+            preventGrowOverflow={false}
+          >
+            <Button
+              size="xs"
+              variant="light"
+              onClick={(event) => {
+                event.stopPropagation()
+                onEdit(task)
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              size="xs"
+              variant="light"
+              color="red"
+              onClick={(event) => {
+                event.stopPropagation()
+                onDelete(task)
+              }}
+            >
+              Delete
+            </Button>
+          </Group>
+        </Group>
+      </Stack>
     </Card>
   )
 }

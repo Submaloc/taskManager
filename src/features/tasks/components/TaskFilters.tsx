@@ -1,4 +1,4 @@
-import { SegmentedControl } from '@mantine/core'
+import { SegmentedControl, Select } from '@mantine/core'
 
 import {
   isTaskStatusFilter,
@@ -13,18 +13,36 @@ type TaskFiltersProps = {
 }
 
 export function TaskFilters({ value, onChange }: TaskFiltersProps) {
+  const data = TASK_STATUS_FILTERS.map((status) => ({
+    value: status,
+    label: TASK_STATUS_FILTER_LABELS[status],
+  }))
+
+  function handleChange(nextValue: string | null) {
+    if (nextValue && isTaskStatusFilter(nextValue)) {
+      onChange(nextValue)
+    }
+  }
+
   return (
-    <SegmentedControl
-      value={value}
-      onChange={(nextValue) => {
-        if (isTaskStatusFilter(nextValue)) {
-          onChange(nextValue)
-        }
-      }}
-      data={TASK_STATUS_FILTERS.map((status) => ({
-        value: status,
-        label: TASK_STATUS_FILTER_LABELS[status],
-      }))}
-    />
+    <>
+      <Select
+        hiddenFrom="sm"
+        aria-label="Filter by status"
+        allowDeselect={false}
+        data={data}
+        value={value}
+        size="md"
+        w="100%"
+        onChange={handleChange}
+      />
+      <SegmentedControl
+        visibleFrom="sm"
+        fullWidth
+        value={value}
+        data={data}
+        onChange={handleChange}
+      />
+    </>
   )
 }

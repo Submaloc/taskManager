@@ -19,10 +19,12 @@ export function TaskStatusSelect({
       onClick={(event) => {
         event.stopPropagation()
       }}
+      style={{ minWidth: 0, maxWidth: '100%' }}
     >
       <Select
         size="xs"
-        w={150}
+        w={160}
+        maw="100%"
         allowDeselect={false}
         data={TASK_STATUS_OPTIONS}
         value={value}
